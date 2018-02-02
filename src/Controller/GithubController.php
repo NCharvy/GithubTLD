@@ -20,9 +20,7 @@ class GithubController extends Controller
         $this->apiHeaders = array("Accept" => "application/json");
         $this->dataParser = new DataParser();
     }
-    /**
-     * @Route("/github", name="github")
-     */
+
     public function index(Request $req): Response
     {
         $user = $req->get('user');
@@ -33,17 +31,20 @@ class GithubController extends Controller
             $repository,
             "commits"
         ));
+        // Substraction of six months (seconds) from the current timestamp
+        $defaultSince = time() - 14515200;
         $params = array(
-            "until" => null !== $req->get('until') ? $req->get('until') : date(DATE_ATOM)
+            "until" => null !== $req->get('until') ? $req->get('until') : date(DATE_ATOM),
+            "since" => null !== $req->get('since') ? $req->get('since') : date(DATE_ATOM, $defaultSince)
         );
 
         $data = Http::get($url, $this->apiHeaders, $params);
+        $parsedData = $this->dataParser->formatBody($data->body, time());
 
         $response = new Response();
-        $response->setContent(json_encode(array(
-            'data' => $data
-        )));
+        $response->setContent(json_encode($parsedData));
         $response->headers->set('Content-Type', 'application/json');
+
         return $response;
     }
 }
