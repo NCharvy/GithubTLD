@@ -9,13 +9,13 @@ class DataParserTest extends TestCase
 {
     public function testParsing()
     {
-    	$parser = new DataParser();
-    	$body = array(
-    		"firstCommit",
-    		"secondCommit",
-    		"thirdCommit"
-    	);
-    	$result = $parser->formatBody($body, time());
+        $parser = new DataParser();
+        $body = array(
+            "firstCommit",
+            "secondCommit",
+            "thirdCommit"
+        );
+        $result = $parser->formatBody($body, time());
         $this->assertEquals($body, $result["commits"]);
     }
 }
